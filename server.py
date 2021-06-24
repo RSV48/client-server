@@ -1,9 +1,6 @@
 # Программа сервера для получения приветствия от клиента и отправки ответа
 import json
 from socket import *
-import time
-import argparse
-import sys
 from functions import createParser
 
 
