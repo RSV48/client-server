@@ -1,22 +1,30 @@
 # Программа сервера для получения приветствия от клиента и отправки ответа
 import json
 from socket import *
-from functions import createParser
+from functions import createParser, send_msg
 
 
 def createResponseMsg(msg):
-    data = json.loads(msg.decode('utf-8'))
-    user = 'Roman'
-    if data.get('user') == user:
-        response = 200
-        alert = f'Добрый день, {user}!'
-    else:
-        response = 402
-        alert = 'Не верный логин'
-    return {
-        "response": response,
-        "alert": alert
-    }
+    try:
+        data = json.loads(msg.decode('utf-8'))
+        user = 'Roman'
+        if data.get('user') == user:
+            response = 200
+            alert = f'Добрый день, {user}!'
+        else:
+            response = 402
+            alert = 'Не верный логин'
+        return {
+            "response": response,
+            "alert": alert
+        }
+    except AttributeError:
+        return {
+            "response": 400,
+            "alert": "Не верный формат сообщения"
+        }
+
+
 
 
 def responseMsg():
@@ -30,8 +38,7 @@ def responseMsg():
         data = client.recv(1000000)
         print(data)
         print('Сообщение: ', data.decode('utf-8'), ', было отправлено клиентом: ', addr)
-        msg = json.dumps(createResponseMsg(data))
-        client.send(msg.encode('utf-8'))
+        send_msg(client, createResponseMsg(data))
         client.close()
 
 

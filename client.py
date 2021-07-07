@@ -1,7 +1,7 @@
 # Программа клиента для отправки приветствия серверу и получения ответа
 import json
 from socket import *
-from functions import createParser
+from functions import createParser, send_msg
 
 
 def createPresenceMsg():
@@ -15,9 +15,9 @@ def createPresenceMsg():
 def exchange_msg():
     server = createParser()
     s = socket(AF_INET, SOCK_STREAM)
-    s.connect(server)  # Соединиться с сервером
-    msg = json.dumps(createPresenceMsg())
-    s.send(msg.encode('utf-8'))
+    s.connect(server)
+    send_msg(s, createPresenceMsg())
+
     data = s.recv(1000000)
     msg = json.loads(data.decode('utf-8'))
     if msg.get('response') == 200:
